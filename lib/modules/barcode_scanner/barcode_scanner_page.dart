@@ -40,6 +40,18 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       right: true,
       child: Stack(
         children: [
+            ValueListenableBuilder<BarcodeScannerStatus>(
+              valueListenable: controller.statusNotifier,
+              builder: (_, status, __){
+                if(status.showCamera){
+                  return Container(
+                    child: controller.cameraController!.buildPreview()
+                  );
+                } else{
+                  return Container();
+                }
+              },
+            ),
             RotatedBox(
             quarterTurns: 1,
             child: Scaffold(
@@ -91,10 +103,12 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                   subtitle: "Try scanning again or enter your slip code.",
                   primaryLabel: "Scan again",
                   primaryOnPressed: (){
-                    controller.getAvailableCameras();
+                    controller.scanWithCamera();
                   },
                   secondaryLabel: "Enter code",
-                  secondaryOnPressed: (){}
+                  secondaryOnPressed: (){
+                    Navigator.pushReplacementNamed(context, "/insert_boleto");
+                  }
                 );
               } else {
                 return Container();
